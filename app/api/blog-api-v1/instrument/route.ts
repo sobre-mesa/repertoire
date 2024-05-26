@@ -1,18 +1,19 @@
 import prisma from "@/lib/prisma";
 import { GenericPOSTParams, genericGetAll, genericPOST } from "../../utils/prismaUtils";
-import { IComment } from "@/types/IComment";
+import { IInstrument } from "@/types/IInstrument";
 import { PostRequestBody } from "@/types/PostRequestBody";
 
-const model = prisma.comment;
-const postParams  = (data: PostRequestBody<IComment>) : GenericPOSTParams => (
+const model = prisma.instrument;
+const postParams  = (data: PostRequestBody<IInstrument>) : GenericPOSTParams => (
   {
     model,
     data,
+    validationField: "name",
   }
 )
 
 export async function POST(req: Request) {
-  const data: PostRequestBody<IComment> = await req.json();
+  const data: PostRequestBody<IInstrument> = await req.json();
   return await genericPOST(postParams(data));
 }
 
