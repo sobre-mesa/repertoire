@@ -3,7 +3,4 @@ export interface IUser {
   email: string;
   name?: string;
   password: string;
-  songs?: IUserSong[];
-  comments?: IComment[];
-  songProgress?: ISongProgress[];
 }
