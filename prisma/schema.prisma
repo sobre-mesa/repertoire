@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model User {
+  id            Int          @id @default(autoincrement())
+  email         String       @unique
+  name          String?
+  password      String
+  comments      Comment[]
+  songProgress  SongProgress[]
+}
+
+model Artist {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  songs Song[]
+}
+
+model Song {
+  id          Int          @id @default(autoincrement())
+  title       String
+  artistId    Int
+  artist      Artist       @relation(fields: [artistId], references: [id])
+  comments    Comment[]
+  songProgress SongProgress[]
+}
+
+model Instrument {
+  id      Int     @id @default(autoincrement())
+  name    String  @unique
+  songProgress SongProgress[]
+}
+
+model SongProgress {
+  id           Int         @id @default(autoincrement())
+  userId       Int
+  songId       Int
+  instrumentId Int
+  completion   Float       @default(0.0)
+  user         User        @relation(fields: [userId], references: [id])
+  song         Song        @relation(fields: [songId], references: [id])
+  instrument   Instrument  @relation(fields: [instrumentId], references: [id])
+}
+
+model Comment {
+  id      Int     @id @default(autoincrement())
+  content String
+  createdAt DateTime @default(now())
+  userId  Int
+  songId  Int
+  user    User    @relation(fields: [userId], references: [id])
+  song    Song    @relation(fields: [songId], references: [id])
+}
